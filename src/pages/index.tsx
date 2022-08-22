@@ -7,29 +7,6 @@ import Sidebar from '../components/Sidebar';
 import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
-  const { data: categories, isLoading } = trpc.useQuery(['category.getAll']);
-  const ctx = trpc.useContext();
-  // TODO: ADD NEW CATEGORY FUNC
-  const addCategory = trpc.useMutation('category.addCategory', {
-    onMutate: () => {
-      ctx.cancelQuery(['category.getAll']);
-      let optimisticUpdate = ctx.getQueryData(['category.getAll']);
-      if (optimisticUpdate) {
-        ctx.setQueryData(['category.getAll'], optimisticUpdate);
-      }
-    },
-    onSettled: () => {
-      ctx.invalidateQueries(['category.getAll']);
-    },
-  });
-
-  const handleAddCategory = (name: string) => {
-    addCategory.mutate({ name });
-  };
-
-  console.log(categories);
-
-  if (isLoading) return <p>Loading</p>;
   return (
     <>
       <Head>
@@ -39,10 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="min-h-screen grid grid-cols-6">
-        <Sidebar
-          handleAddCategory={handleAddCategory}
-          categories={categories}
-        />
+        <Sidebar />
         <NotesList />
         <NoteEditor />
       </main>
