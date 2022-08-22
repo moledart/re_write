@@ -64,9 +64,10 @@ model VerificationToken {
 }
 
 model Category {
-    id    String @id @default(cuid())
-    name  String
-    notes Note[]
+    id        String   @id @default(cuid())
+    name      String
+    createdAt DateTime @default(now())
+    notes     Note[]
 }
 
 model Note {

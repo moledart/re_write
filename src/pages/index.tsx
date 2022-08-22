@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import NoteEditor from '../components/NoteEditor';
 import NotesList from '../components/NotesList';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/Sidebar/';
 import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {

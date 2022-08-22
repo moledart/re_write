@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { RiBillLine } from 'react-icons/ri';
-import { trpc } from '../utils/trpc';
+import { trpc } from '../../utils/trpc';
 import Shelf from './Shelf';
+import { category } from '../../state/atoms';
+import { useAtom } from 'jotai';
 
 interface Props {
   toggleNewCategory: boolean;
@@ -9,8 +11,8 @@ interface Props {
 }
 
 const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
-  const [activeCategory, setActiveCategory] = useState<string | undefined>();
-  const [newCategoryName, setNewCategoryName] = useState('');
+  const [activeCategory, setActiveCategory] = useAtom(category);
+  const [categoryName, setCategoryName] = useState('');
 
   // tRPC
   const {
@@ -19,10 +21,6 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
     isError,
     error,
   } = trpc.useQuery(['category.getAll']);
-
-  useEffect(() => {
-    if (categories) setActiveCategory(categories[0]?.id);
-  }, [categories]);
 
   const ctx = trpc.useContext();
 
@@ -58,8 +56,8 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
             type="text"
             className="w-full px-14 py-4 rounded-lg overflow-hidden focus:outline-none"
             placeholder="Add title"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
           />
           <RiBillLine
             size="24px"
@@ -68,8 +66,8 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
           <button
             className="absolute top-1/2 -translate-y-1/2 right-0 z-10 px-4 cursor-pointer h-[calc(100%-2px)] bg-zinc-700 hover:bg-zinc-900 text-zinc-50"
             onClick={() => {
-              addCategory({ name: newCategoryName });
-              setNewCategoryName('');
+              addCategory({ name: categoryName });
+              setCategoryName('');
               setToggleNewCategory(false);
             }}
           >
