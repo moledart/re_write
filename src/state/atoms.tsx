@@ -1,3 +1,5 @@
+import { Category } from '@prisma/client';
 import { atom } from 'jotai';
 
-export const category = atom<string | undefined>('');
+export const selectedCategoryAtom = atom<string | undefined>(undefined);
+export const selectedNoteAtom = atom<string | undefined>('');

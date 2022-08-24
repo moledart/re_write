@@ -1,12 +1,44 @@
-import { createNextApiHandler } from '@trpc/server/adapters/next';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useEffect } from 'react';
+//State
+import { useAtom } from 'jotai';
+import { selectedCategoryAtom } from '../state/atoms';
+
+//Components
 import NoteEditor from '../components/NoteEditor';
-import NotesList from '../components/NotesList';
+import NotesList from '../components/NotesList/NotesList';
 import Sidebar from '../components/Sidebar/';
+
 import { trpc } from '../utils/trpc';
+import { Category } from '@prisma/client';
 
 const Home: NextPage = () => {
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+
+  const {
+    data: categories,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+  } = trpc.useQuery(['category.getAll']);
+
+  let firstCategoryId: string | undefined;
+  if (isSuccess && categories.length > 0) {
+    firstCategoryId = categories[0]?.id;
+  }
+
+  useEffect(() => setSelectedCategory(firstCategoryId), [firstCategoryId]);
+
+  const { data: categoryWithNotes } = trpc.useQuery(
+    ['category.getById', { id: selectedCategory! }],
+    { enabled: !!selectedCategory }
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
   return (
     <>
       <Head>
@@ -17,7 +49,7 @@ const Home: NextPage = () => {
 
       <main className="min-h-screen grid grid-cols-6">
         <Sidebar />
-        <NotesList />
+        <NotesList categoryWithNotes={categoryWithNotes} />
         <NoteEditor />
       </main>
     </>

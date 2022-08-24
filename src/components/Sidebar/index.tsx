@@ -8,7 +8,7 @@ const Sidebar = () => {
   const [toggleNewCategory, setToggleNewCategory] = useState(false);
 
   return (
-    <aside className="bg-zinc-50 col-span-2 px-5 py-10 flex flex-col pb-20">
+    <aside className="bg-zinc-50 col-span-1 px-5 py-10 flex flex-col pb-20">
       <Account />
       <NotesSearch />
       <Shelves

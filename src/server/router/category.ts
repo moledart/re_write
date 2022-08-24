@@ -1,6 +1,5 @@
 import { createRouter } from './context';
 import { z } from 'zod';
-import { createCategorySchema } from '../schema/category.schema';
 
 export const categoryRouter = createRouter()
   .query('getAll', {
@@ -8,6 +7,24 @@ export const categoryRouter = createRouter()
       return await ctx.prisma.category.findMany({
         orderBy: {
           name: 'desc',
+        },
+      });
+    },
+  })
+  .query('getById', {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      return await ctx.prisma.category.findFirst({
+        where: {
+          id: input.id,
+        },
+        include: {
+          notes: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       });
     },

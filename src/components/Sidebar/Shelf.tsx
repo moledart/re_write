@@ -1,17 +1,18 @@
-import { Category } from '@prisma/client';
 import React, { useState } from 'react';
-import { RiBillLine, RiMoreFill } from 'react-icons/ri';
 import { trpc } from '../../utils/trpc';
+
+//Components
 import ShelfMenu from './ShelfMenu';
+import { RiBillLine, RiMoreFill } from 'react-icons/ri';
 
 interface Props {
   name: string;
   id: string;
-  activeCategory: string | undefined;
-  setActiveCategory: React.Dispatch<React.SetStateAction<string | undefined>>;
+  selectedCategory: string | undefined;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const Shelf = ({ name, id, activeCategory, setActiveCategory }: Props) => {
+const Shelf = ({ name, id, selectedCategory, setSelectedCategory }: Props) => {
   const [visible, setVisible] = useState(false);
   const [editName, setEditName] = useState(false);
   const [categoryName, setCategoryName] = useState(name);
@@ -36,11 +37,11 @@ const Shelf = ({ name, id, activeCategory, setActiveCategory }: Props) => {
   return (
     <li
       className={`flex items-center rounded-lg cursor-pointer relative hover:text-zinc-900 hover:bg-white transition-shadow duration-200 ${
-        activeCategory === id
+        selectedCategory === id
           ? 'text-zinc-900 bg-white shadow-inner shadow-zinc-300'
           : 'text-zinc-500'
       }`}
-      onClick={() => setActiveCategory(id)}
+      onClick={() => setSelectedCategory(id)}
     >
       <RiBillLine size="24px" className="ml-4" />
       {editName ? (

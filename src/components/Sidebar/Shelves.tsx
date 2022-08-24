@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { RiBillLine } from 'react-icons/ri';
-import { trpc } from '../../utils/trpc';
-import Shelf from './Shelf';
-import { category } from '../../state/atoms';
+//State
 import { useAtom } from 'jotai';
+import { selectedCategoryAtom } from '../../state/atoms';
+
+import { trpc } from '../../utils/trpc';
+
+//Components
+import Shelf from './Shelf';
+import { RiBillLine } from 'react-icons/ri';
 
 interface Props {
   toggleNewCategory: boolean;
@@ -11,16 +15,14 @@ interface Props {
 }
 
 const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
-  const [activeCategory, setActiveCategory] = useAtom(category);
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
   const [categoryName, setCategoryName] = useState('');
 
-  // tRPC
-  const {
-    data: categories,
-    isLoading,
-    isError,
-    error,
-  } = trpc.useQuery(['category.getAll']);
+  // tRPC getting all categories
+  const { data: categories } = trpc.useQuery(['category.getAll']);
+
+  //Setting the first category as active
+  // useEffect(() => setSelectedCategory(categories && categories[0]?.id), []);
 
   const ctx = trpc.useContext();
 
@@ -39,15 +41,13 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
 
   return (
     <ul className="flex flex-col gap-4 mt-10">
-      {isLoading && 'Loading...'}
-      {isError && error instanceof Error && `Error: ${error.message}`}
       {categories?.map(({ name, id }) => (
         <Shelf
           name={name}
           id={id}
           key={id}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
         />
       ))}
       {toggleNewCategory && (
