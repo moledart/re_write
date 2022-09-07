@@ -1,8 +1,6 @@
-import { useEditor, EditorContent, ChainedCommands } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import type { Editor } from '@tiptap/react';
-import Document from '@tiptap/extension-document';
-import Placeholder from '@tiptap/extension-placeholder';
+import { Editor } from '@tiptap/react';
+import React from 'react';
+
 import {
   RiListUnordered,
   RiListOrdered,
@@ -22,11 +20,7 @@ import {
   RiArrowGoForwardLine,
 } from 'react-icons/ri';
 
-const CustomDocument = Document.extend({
-  content: 'heading block*',
-});
-
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
+const EditorMenu = ({ editor }: { editor: Editor | null }) => {
   if (!editor) return null;
 
   const chainAndFocus = () => {
@@ -135,49 +129,4 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-const Tiptap = () => {
-  const editor = useEditor({
-    extensions: [
-      CustomDocument,
-      StarterKit.configure({
-        document: false,
-      }),
-      Placeholder.configure({
-        placeholder: ({ node }) => {
-          if (node.type.name === 'heading') {
-            return 'Heading';
-          }
-
-          return 'Paragraph';
-        },
-      }),
-    ],
-    content: `
-      <h1>
-        It’ll always have a heading …
-      </h1>
-      <p>
-        … if you pass a custom document. That’s the beauty of having full control over the schema.
-      </p>
-    `,
-    autofocus: true,
-    injectCSS: false,
-    editorProps: {
-      attributes: {
-        class: 'prose h-full min-h-[300px] max-w-none focus:outline-none py-10',
-      },
-    },
-
-    onUpdate({ editor }) {
-      const json = editor.getJSON();
-    },
-  });
-  return (
-    <>
-      <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
-    </>
-  );
-};
-
-export default Tiptap;
+export default EditorMenu;

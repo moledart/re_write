@@ -10,29 +10,52 @@ import NoteCard from './NoteCard';
 //State
 import { useAtom } from 'jotai';
 import { selectedCategoryAtom } from '../../state/atoms';
+import AddNoteButton from '../AddNoteButton';
 
 interface Props {
-  categoryWithNotes:
-    | (Category & {
-        notes: Note[];
-      })
-    | null
-    | undefined;
+  // categoryWithNotes:
+  //   | (Category & {
+  //       notes: Note[];
+  //     })
+  //   | null
+  //   | undefined;
+  notes: Note[];
 }
 
-const NotesList = ({ categoryWithNotes }: Props) => {
+// const NotesList = ({ categoryWithNotes }: Props) => {
+//   const notes = categoryWithNotes?.notes;
+//   return (
+//     <div className="col-span-2 px-5 py-10 pb-20 border-r border-r-zinc-200">
+//       <h1 className="text-3xl font-bold h-[72px] flex items-center">
+//         {categoryWithNotes?.name}
+//       </h1>
+//       <div className="max-w-fit rounded-lg overflow-hidden">
+//         <AddNoteButton />
+//       </div>
+//       <div className="flex flex-col gap-5 mt-5">
+//         {!notes && 'Loading...'}
+//         {notes?.map((note) => (
+//           <NoteCard note={note} key={note.id} />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+const NotesList = ({ notes }: Props) => {
   return (
-    <div className="col-span-2 px-5 py-10 pb-20 border-r border-r-zinc-200">
-      <h1 className="text-3xl font-bold h-[72px]">{categoryWithNotes?.name}</h1>
-      <div className="flex items-center bg-zinc-100 text-zinc-900 p-4 rounded-lg cursor-pointer mt-5">
-        <PlusIcon className="h-6" />
-        <p className="ml-4">Add new note</p>
+    <div className="px-5 py-10 pb-20 border-r border-r-zinc-200">
+      <h1 className="text-3xl font-bold h-[72px] flex items-center">
+        All the notes
+      </h1>
+      <div className="max-w-fit rounded-lg overflow-hidden">
+        <AddNoteButton />
       </div>
       <div className="flex flex-col gap-5 mt-5">
-        {/* {!notes && 'Loading...'}
+        {!notes && 'Loading...'}
         {notes?.map((note) => (
           <NoteCard note={note} key={note.id} />
-        ))} */}
+        ))}
       </div>
     </div>
   );

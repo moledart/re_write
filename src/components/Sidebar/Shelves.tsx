@@ -6,7 +6,7 @@ import { selectedCategoryAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 
 //Components
-import Shelf from './Shelf';
+import Shelf, { ShelfContainer } from './Shelf';
 import { RiBillLine } from 'react-icons/ri';
 
 interface Props {
@@ -15,8 +15,8 @@ interface Props {
 }
 
 const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
-  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
   const [categoryName, setCategoryName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
 
   // tRPC getting all categories
   const { data: categories } = trpc.useQuery(['category.getAll']);
@@ -41,14 +41,11 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
 
   return (
     <ul className="flex flex-col gap-4 mt-10">
+      <ShelfContainer id="default">
+        <p className="ml-4 py-4">All notes</p>
+      </ShelfContainer>
       {categories?.map(({ name, id }) => (
-        <Shelf
-          name={name}
-          id={id}
-          key={id}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+        <Shelf name={name} id={id} key={id} />
       ))}
       {toggleNewCategory && (
         <li className="relative">

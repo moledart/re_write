@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-  /* font-family: 'Syne', sans-serif; */
-  font-family: 'Work Sans', sans-serif;
+  /* font-family: 'Work Sans', sans-serif; */
+  font-family: 'Rubik', sans-serif;
 }
 
 .ProseMirror .is-empty::before {
@@ -17,7 +19,7 @@
 
 @layer components {
   .controls-menu {
-    @apply py-4 border-y border-y-zinc-200 flex flex-wrap;
+    @apply py-4 border-y border-y-zinc-200 flex flex-wrap mt-auto;
   }
   .controls-menu > button {
     @apply py-2 px-3 leading-none hover:bg-zinc-200 text-zinc-900;

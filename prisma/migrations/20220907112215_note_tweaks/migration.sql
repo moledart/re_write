@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Note" ADD COLUMN     "subheader" TEXT,
+ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "body" DROP NOT NULL;

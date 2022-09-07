@@ -71,13 +71,14 @@ model Category {
 }
 
 model Note {
-    id         String   @id @default(cuid())
-    createdAt  DateTime @default(now())
-    title      String
-    category   Category @relation(fields: [categoryId], references: [id])
-    categoryId String
+    id         String    @id @default(cuid())
+    createdAt  DateTime  @default(now())
+    title      String?
+    subheader  String?
+    body       Json?
+    category   Category? @relation(fields: [categoryId], references: [id])
+    categoryId String?
     tags       Tag[]
-    body       Json
 }
 
 model Tag {

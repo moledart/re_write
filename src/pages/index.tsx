@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import { selectedCategoryAtom } from '../state/atoms';
 
 //Components
-import NoteEditor from '../components/NoteEditor';
+import NoteEditor from '../components/Editor';
 import NotesList from '../components/NotesList/NotesList';
 import Sidebar from '../components/Sidebar/';
 
@@ -16,29 +16,36 @@ import { Category } from '@prisma/client';
 const Home: NextPage = () => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
 
+  // const {
+  //   data: categories,
+  //   isSuccess,
+  //   isLoading,
+  //   isError,
+  //   error,
+  // } = trpc.useQuery(['category.getAll']);
+
+  // let firstCategoryId: string | undefined;
+  // if (isSuccess && categories.length > 0) {
+  //   firstCategoryId = categories[0]?.id;
+  // }
+
+  // useEffect(() => setSelectedCategory(firstCategoryId), [firstCategoryId]);
+
+  // const { data: categoryWithNotes } = trpc.useQuery(
+  //   ['category.getById', { id: selectedCategory! }],
+  //   { enabled: !!selectedCategory }
+  // );
+
   const {
-    data: categories,
+    data: notes,
     isSuccess,
     isLoading,
     isError,
     error,
-  } = trpc.useQuery(['category.getAll']);
-
-  let firstCategoryId: string | undefined;
-  if (isSuccess && categories.length > 0) {
-    firstCategoryId = categories[0]?.id;
-  }
-
-  useEffect(() => setSelectedCategory(firstCategoryId), [firstCategoryId]);
-
-  const { data: categoryWithNotes } = trpc.useQuery(
-    ['category.getById', { id: selectedCategory! }],
-    { enabled: !!selectedCategory }
-  );
+  } = trpc.useQuery(['notes.getAllNotes']);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
-
   return (
     <>
       <Head>
@@ -47,9 +54,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="min-h-screen grid grid-cols-6">
+      <main className="min-h-screen grid grid-cols-[240px_380px_1fr]">
         <Sidebar />
-        <NotesList categoryWithNotes={categoryWithNotes} />
+        {isSuccess && <NotesList notes={notes} />}
         <NoteEditor />
       </main>
     </>
