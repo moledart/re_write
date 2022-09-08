@@ -1,26 +1,34 @@
-import { Note } from '@prisma/client';
-
 //Components
 import NoteCard from './NoteCard';
 
 //State
+import { useAtom } from 'jotai';
+import { selectedCategoryAtom } from '../../state/atoms';
+import { trpc } from '../../utils/trpc';
 import AddNoteButton from '../AddNoteButton';
 
-interface Props {
-  notes: Note[];
-}
+const NotesList = () => {
+  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
 
-const NotesList = ({ notes }: Props) => {
+  const {
+    data: notes,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+  } = trpc.useQuery(['notes.getNotes', { id: selectedCategory }]);
+
   return (
     <div className="px-5 py-10 border-r border-r-zinc-200 max-h-screen overflow-hidden flex flex-col">
-      <h1 className="text-3xl font-bold flex items-center h-[72px]">
-        All the notes
-      </h1>
-      <div className="max-w-fit">
-        <AddNoteButton />
-      </div>
-      <ul className="flex flex-col gap-4 mt-5 overflow-y-scroll no-scrollbar ">
-        {!notes && 'Loading...'}
+      <header>
+        <h1 className="text-3xl font-bold flex items-center h-[72px]">
+          All the notes
+        </h1>
+        <div className="max-w-fit">
+          <AddNoteButton />
+        </div>
+      </header>
+      <ul className="flex flex-col gap-4 mt-5 pb-5 overflow-y-scroll scroll-smooth no-scrollbar relative custom-opacity">
         {notes?.map((note) => (
           <NoteCard note={note} key={note.id} />
         ))}

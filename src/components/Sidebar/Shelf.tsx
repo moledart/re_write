@@ -1,120 +1,76 @@
-import React, { useState } from 'react';
-import { trpc } from '../../utils/trpc';
-
-//Components
-import ShelfMenu from './ShelfMenu';
-import { RiBillLine, RiMoreFill, RiFlutterLine } from 'react-icons/ri';
-
-//State
 import { useAtom } from 'jotai';
+import { useState } from 'react';
+import { RiCheckLine, RiCloseLine, RiMoreFill } from 'react-icons/ri';
+import { useEditCategory } from '../../hooks/useEditCategory';
 import { selectedCategoryAtom } from '../../state/atoms';
+import ShelfMenu from './ShelfMenu';
 
-interface ShelfProps {
-  name: string;
-  id: string;
-}
-
-interface ContainerProps {
-  children: React.ReactNode;
-  id: string;
-}
-
-interface ShelfInnerContent extends ShelfProps {
-  setEditName: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const ShelfContainer = ({ children, id }: ContainerProps) => {
+const Shelf = ({ name, id }: { name: string; id: string }) => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
-  const isActive =
-    selectedCategory === id
-      ? 'text-zinc-900 bg-white shadow-inner shadow-zinc-300'
-      : 'text-zinc-500';
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [categoryName, setCategoryName] = useState(name);
+  const [editName, setEditName] = useState(false);
+  const editCategory = useEditCategory();
+
+  const isActive = selectedCategory === id;
 
   return (
     <li
-      className={`flex items-center rounded-lg cursor-pointer relative hover:text-zinc-900 hover:bg-white transition-shadow duration-200 ${isActive}`}
+      className={`flex justify-between relative hover-border ${
+        isActive ? 'bg-white text-zinc-900' : 'text-zinc-400'
+      }`}
       onClick={() => setSelectedCategory(id)}
     >
-      <RiFlutterLine size="24px" className="ml-4 -rotate-45" />
-      {children}
-    </li>
-  );
-};
-
-const ShelfWithInput = ({ name, id, setEditName }: ShelfInnerContent) => {
-  const [categoryName, setCategoryName] = useState(name);
-
-  const ctx = trpc.useContext();
-  const { mutate: changeCategory } = trpc.useMutation(
-    ['category.changeCategory'],
-    {
-      onMutate: () => {
-        ctx.cancelQuery(['category.getAll']);
-        let optimisticUpdate = ctx.getQueryData(['category.getAll']);
-        if (optimisticUpdate) {
-          ctx.setQueryData(['category.getAll'], optimisticUpdate);
-        }
-      },
-      onSettled: () => {
-        ctx.invalidateQueries(['category.getAll']);
-      },
-    }
-  );
-
-  return (
-    <>
-      <input
-        type="text"
-        className="flex-auto ml-4 py-4 focus:outline-none bg-transparent"
-        placeholder="Add title"
-        value={categoryName}
-        onChange={(e) => setCategoryName(e.target.value)}
-      />
-      <button
-        className="px-4 cursor-pointer h-full bg-zinc-700 hover:bg-zinc-900 text-zinc-50"
-        onClick={() => {
-          changeCategory({ id, name: categoryName });
-          setEditName(false);
-        }}
-      >
-        Save
-      </button>
-    </>
-  );
-};
-
-const ShelfWithContent = ({ name, id, setEditName }: ShelfInnerContent) => {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <>
-      <p className="ml-4 py-4">{name}</p>
-      <RiMoreFill
-        size="24px"
-        className="ml-auto hover:text-zinc-900 mr-4"
-        onClick={(e) => {
-          e.stopPropagation();
-          setVisible(!visible);
-        }}
-      />
-      {visible && (
-        <ShelfMenu id={id} setEditName={setEditName} setVisible={setVisible} />
-      )}
-    </>
-  );
-};
-
-const Shelf = ({ name, id }: ShelfProps) => {
-  const [editName, setEditName] = useState(false);
-
-  return (
-    <ShelfContainer id={id}>
       {editName ? (
-        <ShelfWithInput id={id} name={name} setEditName={setEditName} />
+        <>
+          <input
+            type="text"
+            className="flex pl-4 py-3 outline-none min-w-0 rounded-lg"
+            placeholder="Add title"
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+          />
+          <div className="flex items-center gap-2 mr-4 text-zinc-400">
+            <RiCheckLine
+              size={24}
+              className="hover:text-emerald-600"
+              onClick={() => {
+                editCategory({ id, name: categoryName });
+                setEditName(false);
+              }}
+            />
+            <RiCloseLine
+              className="hover:text-rose-600"
+              size={24}
+              onClick={() => {
+                setEditName(false);
+              }}
+            />
+          </div>
+        </>
       ) : (
-        <ShelfWithContent id={id} name={name} setEditName={setEditName} />
+        <>
+          <p className="pl-4 py-3">{name}</p>
+          <div
+            className="flex items-center mr-4"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuVisible(!menuVisible);
+            }}
+          >
+            <RiMoreFill size="24px" className="hover:text-zinc-900" />
+          </div>
+        </>
       )}
-    </ShelfContainer>
+
+      {menuVisible && (
+        <ShelfMenu
+          id={id}
+          setEditName={setEditName}
+          setVisible={setMenuVisible}
+        />
+      )}
+    </li>
   );
 };
 

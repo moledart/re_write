@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import React from 'react';
 import { RiArrowDownSLine } from 'react-icons/ri';
 
 const Account = () => {
@@ -11,7 +10,7 @@ const Account = () => {
         height="40px"
         className="rounded-sm"
       />
-      <p className="text-xl font-semibold ml-4">Andrei K</p>
+      <p className="text-xl font-medium ml-4">Andrei K</p>
       <RiArrowDownSLine size="24px" className="ml-auto" />
     </div>
   );

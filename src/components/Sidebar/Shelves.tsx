@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 //State
 import { useAtom } from 'jotai';
 import { selectedCategoryAtom } from '../../state/atoms';
@@ -6,8 +6,9 @@ import { selectedCategoryAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 
 //Components
-import Shelf, { ShelfContainer } from './Shelf';
 import { RiBillLine } from 'react-icons/ri';
+import { useAddCategory } from '../../hooks/useAddCategory';
+import Shelf from './Shelf';
 
 interface Props {
   toggleNewCategory: boolean;
@@ -21,29 +22,16 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
   // tRPC getting all categories
   const { data: categories } = trpc.useQuery(['category.getAll']);
 
-  //Setting the first category as active
-  // useEffect(() => setSelectedCategory(categories && categories[0]?.id), []);
-
-  const ctx = trpc.useContext();
-
-  const { mutate: addCategory } = trpc.useMutation('category.addCategory', {
-    onMutate: () => {
-      ctx.cancelQuery(['category.getAll']);
-      let optimisticUpdate = ctx.getQueryData(['category.getAll']);
-      if (optimisticUpdate) {
-        ctx.setQueryData(['category.getAll'], optimisticUpdate);
-      }
-    },
-    onSettled: () => {
-      ctx.invalidateQueries(['category.getAll']);
-    },
-  });
+  const addCategory = useAddCategory();
 
   return (
-    <ul className="flex flex-col gap-4 mt-10">
-      <ShelfContainer id="default">
-        <p className="ml-4 py-4">All notes</p>
-      </ShelfContainer>
+    <ul className="flex flex-col gap-2 mt-10">
+      <li
+        className={`flex justify-between relative hover-border`}
+        onClick={() => setSelectedCategory(undefined)}
+      >
+        <p className="pl-4 py-4">All notes</p>
+      </li>
       {categories?.map(({ name, id }) => (
         <Shelf name={name} id={id} key={id} />
       ))}

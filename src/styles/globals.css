@@ -38,4 +38,15 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+  .custom-opacity {
+    mask-image: linear-gradient(
+      to bottom,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+  }
+
+  .hover-border {
+    @apply border-2 border-transparent hover:border-zinc-900 transition-all duration-100 cursor-pointer rounded-lg;
+  }
 }

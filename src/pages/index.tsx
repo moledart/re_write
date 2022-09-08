@@ -1,29 +1,13 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 //State
-import { useAtom } from 'jotai';
-import { selectedCategoryAtom } from '../state/atoms';
 
 //Components
 import NoteEditor from '../components/Editor';
 import NotesList from '../components/NotesList';
 import Sidebar from '../components/Sidebar/';
 
-import { trpc } from '../utils/trpc';
-
 const Home: NextPage = () => {
-  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
-
-  const {
-    data: notes,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-  } = trpc.useQuery(['notes.getAllNotes']);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
   return (
     <>
       <Head>
@@ -34,7 +18,7 @@ const Home: NextPage = () => {
 
       <main className="min-h-screen grid grid-cols-[300px_400px_1fr]">
         <Sidebar />
-        {isSuccess && <NotesList notes={notes} />}
+        <NotesList />
         <NoteEditor />
       </main>
     </>

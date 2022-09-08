@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
-import { trpc } from '../utils/trpc';
 import { selectedNoteAtom } from '../state/atoms';
+import { trpc } from '../utils/trpc';
 
 export const useAddNote = () => {
   const ctx = trpc.useContext();
@@ -8,13 +8,13 @@ export const useAddNote = () => {
 
   const { mutate: addNote } = trpc.useMutation(['notes.addNewNote'], {
     onMutate: () => {
-      ctx.cancelQuery(['notes.getAllNotes']);
-      let optimisticUpdate = ctx.getQueryData(['notes.getAllNotes']);
+      ctx.cancelQuery(['notes.getNotes']);
+      let optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
       if (optimisticUpdate)
-        ctx.setQueryData(['notes.getAllNotes'], optimisticUpdate);
+        ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
     },
     onSettled: (data) => {
-      ctx.invalidateQueries(['notes.getAllNotes']);
+      ctx.invalidateQueries(['notes.getNotes']);
       setSelectedNote(data?.id);
     },
   });

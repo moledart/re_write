@@ -5,13 +5,13 @@ export const useDeleteNote = () => {
 
   const { mutate: deleteNote } = trpc.useMutation(['notes.deleteNote'], {
     onMutate: () => {
-      ctx.cancelQuery(['notes.getAllNotes']);
-      let optimisticUpdate = ctx.getQueryData(['notes.getAllNotes']);
+      ctx.cancelQuery(['notes.getNotes']);
+      let optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
       if (optimisticUpdate)
-        ctx.setQueryData(['notes.getAllNotes'], optimisticUpdate);
+        ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
     },
     onSettled: () => {
-      ctx.invalidateQueries(['notes.getAllNotes']);
+      ctx.invalidateQueries(['notes.getNotes']);
     },
   });
 

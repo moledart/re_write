@@ -1,5 +1,5 @@
-import { createRouter } from './context';
 import { z } from 'zod';
+import { createRouter } from './context';
 
 export const categoryRouter = createRouter()
   .query('getAll', {
@@ -7,24 +7,6 @@ export const categoryRouter = createRouter()
       return await ctx.prisma.category.findMany({
         orderBy: {
           name: 'desc',
-        },
-      });
-    },
-  })
-  .query('getById', {
-    input: z.object({
-      id: z.string(),
-    }),
-    async resolve({ ctx, input }) {
-      return await ctx.prisma.category.findFirst({
-        where: {
-          id: input.id,
-        },
-        include: {
-          notes: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
         },
       });
     },
@@ -61,7 +43,7 @@ export const categoryRouter = createRouter()
       }
     },
   })
-  .mutation('changeCategory', {
+  .mutation('editCategory', {
     input: z.object({
       name: z.string(),
       id: z.string(),

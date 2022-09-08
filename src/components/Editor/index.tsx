@@ -18,7 +18,7 @@ const NoteEditor = () => {
 
   if (!selectedNote && !activeEditor)
     return (
-      <div className="">
+      <div className="w-fit h-fit self-center justify-self-center">
         <AddNoteButton />
       </div>
     );

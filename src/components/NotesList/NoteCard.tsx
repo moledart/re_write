@@ -1,14 +1,17 @@
-import { Note } from '@prisma/client';
 import { RiDeleteBinLine } from 'react-icons/ri';
 
 //State
 import { useAtom } from 'jotai';
 import { useDeleteNote } from '../../hooks/useDeleteNote';
 import { selectedNoteAtom } from '../../state/atoms';
-import Tag from './Tag';
 
 interface Props {
-  note: Note;
+  note: {
+    id: string;
+    createdAt: Date;
+    title: string | null;
+    subheader: string | null;
+  };
 }
 
 const NoteCard = ({ note }: Props) => {
@@ -21,11 +24,10 @@ const NoteCard = ({ note }: Props) => {
     day: '2-digit',
   });
 
-  console.log(date);
   let isActive = selectedNote === note.id;
 
   return (
-    <li className="cursor-pointer group border-2 border-transparent hover:border-zinc-900 transition-all duration-100 flex-[0_0_auto] rounded-lg">
+    <li className="group hover-border flex-[0_0_auto]">
       <article
         className={`p-4 ${
           isActive ? 'bg-zinc-100 text-zinc-900' : 'bg-zinc-50 text-zinc-500'
@@ -42,9 +44,9 @@ const NoteCard = ({ note }: Props) => {
           {subheader ? subheader : 'Conent is here'}
         </p>
         <div className="flex flex-wrap gap-2 mt-4">
+          {/* <Tag selectedNoteTag={selectedNote === note.id} />
           <Tag selectedNoteTag={selectedNote === note.id} />
-          <Tag selectedNoteTag={selectedNote === note.id} />
-          <Tag selectedNoteTag={selectedNote === note.id} />
+          <Tag selectedNoteTag={selectedNote === note.id} /> */}
           <RiDeleteBinLine
             size="24px"
             className="text-zinc-300 hover:text-rose-400 place-self-center opacity-0 ml-auto group-hover:opacity-100 transition-all duration-100"

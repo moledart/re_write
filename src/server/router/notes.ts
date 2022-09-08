@@ -1,25 +1,27 @@
-import { createRouter } from './context';
 import z from 'zod';
-import { JSONContent } from '@tiptap/react';
+import { createRouter } from './context';
 
 export const notesRouter = createRouter()
-  .query('getAllNotes', {
-    async resolve({ ctx }) {
-      return await ctx.prisma.note.findMany({
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    },
-  })
-  .query('getNotesByCategory', {
-    input: z.object({
-      id: z.string(),
-    }),
+  .query('getNotes', {
+    input: z
+      .object({
+        id: z.string().optional(),
+      })
+      .optional(),
     async resolve({ ctx, input }) {
       return await ctx.prisma.note.findMany({
         where: {
-          categoryId: input.id,
+          categoryId: input ? input.id : undefined,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          createdAt: true,
+          title: true,
+          subheader: true,
+          tags: true,
+          id: true,
         },
       });
     },
