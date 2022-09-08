@@ -1,17 +1,13 @@
-import { useEditor, EditorContent, Content } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import Document from '@tiptap/extension-document';
 import Placeholder from '@tiptap/extension-placeholder';
-import EditorMenu from './EditorMenu';
-import { prepareServerlessUrl } from 'next/dist/server/base-server';
-import { NoteFields } from '.';
-import { Note } from '@prisma/client';
-import { JSONValue } from 'superjson/dist/types';
-import { useEffect } from 'react';
-import assert from 'assert';
-import { trpc } from '../../utils/trpc';
+import { Content, EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { useEditNote } from '../../hooks/useEditNote';
 import { selectedNoteAtom } from '../../state/atoms';
+import { trpc } from '../../utils/trpc';
+import EditorMenu from './EditorMenu';
 
 const CustomDocument = Document.extend({
   content: 'heading block*',
@@ -19,24 +15,14 @@ const CustomDocument = Document.extend({
 
 const Tiptap = () => {
   const [selectedNote] = useAtom(selectedNoteAtom);
-  const ctx = trpc.useContext();
 
   const { data: note } = trpc.useQuery(
     ['notes.getNoteById', { id: selectedNote! }],
     { enabled: !!selectedNote }
   );
 
-  const { mutate: editNote } = trpc.useMutation(['notes.editNote'], {
-    onMutate: () => {
-      ctx.cancelQuery(['notes.getAllNotes']);
-      let optimisticUpdate = ctx.getQueryData(['notes.getAllNotes']);
-      if (optimisticUpdate)
-        ctx.setQueryData(['notes.getAllNotes'], optimisticUpdate);
-    },
-    onSettled: () => {
-      ctx.invalidateQueries(['notes.getAllNotes']);
-    },
-  });
+  const editNote = useEditNote();
+
   const editor = useEditor(
     {
       extensions: [
@@ -76,10 +62,6 @@ const Tiptap = () => {
 
           editNote({ title, subheader, body, id: selectedNote });
         }
-        // console.log(body);
-        // let title = json.content?.at(0)?.content?.at(0)?.text;
-        // let subheader = json.content?.at(1)?.content?.at(0)?.text;
-        // if (body) setNewNote({ title, subheader, body });
       },
     },
     [selectedNote]
