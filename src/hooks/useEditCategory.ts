@@ -5,7 +5,7 @@ export const useEditCategory = () => {
   const { mutate: editCategory } = trpc.useMutation(['category.editCategory'], {
     onMutate: () => {
       ctx.cancelQuery(['category.getAll']);
-      let optimisticUpdate = ctx.getQueryData(['category.getAll']);
+      const optimisticUpdate = ctx.getQueryData(['category.getAll']);
       if (optimisticUpdate) {
         ctx.setQueryData(['category.getAll'], optimisticUpdate);
       }

@@ -51,12 +51,12 @@ const Tiptap = () => {
       },
       onUpdate({ editor }) {
         const json = editor.getJSON();
-        let body = json.content;
+        const body = json.content;
         if (body && selectedNote) {
-          let title = body
+          const title = body
             .find((element) => element.type === 'heading')
             ?.content?.at(0)?.text;
-          let subheader = body
+          const subheader = body
             .find((element) => element.type === 'paragraph')
             ?.content?.at(0)?.text;
 

@@ -9,7 +9,7 @@ export const useAddNote = () => {
   const { mutate: addNote } = trpc.useMutation(['notes.addNewNote'], {
     onMutate: () => {
       ctx.cancelQuery(['notes.getNotes']);
-      let optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
+      const optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
       if (optimisticUpdate)
         ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
     },

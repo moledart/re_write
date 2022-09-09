@@ -24,7 +24,7 @@ const NoteCard = ({ note }: Props) => {
     day: '2-digit',
   });
 
-  let isActive = selectedNote === note.id;
+  const isActive = selectedNote === note.id;
 
   return (
     <li className="group hover-border flex-[0_0_auto]">
