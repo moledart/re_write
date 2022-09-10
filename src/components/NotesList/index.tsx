@@ -3,16 +3,19 @@ import NoteCard from './NoteCard';
 
 //State
 import { useAtom } from 'jotai';
-import { selectedCategoryAtom } from '../../state/atoms';
+import { searchAtom, selectedCategoryAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 import AddNoteButton from '../AddNoteButton';
 
 const NotesList = () => {
-  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const [selectedCategory] = useAtom(selectedCategoryAtom);
+  const [search, setSearch] = useAtom(searchAtom);
+  console.log(search);
+
   const ctx = trpc.useContext();
 
   const { data: notes } = trpc.useQuery(
-    ['notes.getNotes', { id: selectedCategory }],
+    ['notes.getNotes', { id: selectedCategory, search: search }],
     {
       onSettled: (recievedNotes) => {
         recievedNotes?.forEach((note) =>
@@ -37,6 +40,9 @@ const NotesList = () => {
         {notes?.map((note) => (
           <NoteCard note={note} key={note.id} />
         ))}
+        {!notes?.length && search && (
+          <span className="text-zinc-600 mt-5">Nothing to display</span>
+        )}
       </ul>
     </div>
   );

@@ -6,12 +6,25 @@ export const notesRouter = createRouter()
     input: z
       .object({
         id: z.string().optional(),
+        search: z.string().optional(),
       })
       .optional(),
     async resolve({ ctx, input }) {
       return await ctx.prisma.note.findMany({
         where: {
           categoryId: input ? input.id : undefined,
+          OR: [
+            {
+              title: {
+                contains: input ? input.search : undefined,
+              },
+            },
+            {
+              subheader: {
+                contains: input ? input.search : undefined,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: 'desc',
