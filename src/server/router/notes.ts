@@ -55,7 +55,7 @@ export const notesRouter = createRouter()
     input: z.object({
       title: z.string().optional(),
       subheader: z.any().optional(),
-      body: z.any().optional(),
+      noteContent: z.any().optional(),
     }),
     async resolve({ ctx, input }) {
       try {
@@ -63,7 +63,7 @@ export const notesRouter = createRouter()
           data: {
             title: input.title,
             subheader: input.subheader,
-            body: input.body,
+            noteContent: input.noteContent,
           },
         });
       } catch (error) {
@@ -92,7 +92,7 @@ export const notesRouter = createRouter()
       id: z.string(),
       title: z.string().optional(),
       subheader: z.any().optional(),
-      body: z.any().optional(),
+      noteContent: z.any().optional(),
     }),
     async resolve({ ctx, input }) {
       try {
@@ -103,7 +103,7 @@ export const notesRouter = createRouter()
           data: {
             title: input.title,
             subheader: input.subheader,
-            body: input.body,
+            noteContent: input.noteContent,
           },
         });
       } catch (error) {

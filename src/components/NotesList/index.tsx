@@ -9,8 +9,7 @@ import AddNoteButton from '../AddNoteButton';
 
 const NotesList = () => {
   const [selectedCategory] = useAtom(selectedCategoryAtom);
-  const [search, setSearch] = useAtom(searchAtom);
-  console.log(search);
+  const [search] = useAtom(searchAtom);
 
   const ctx = trpc.useContext();
 

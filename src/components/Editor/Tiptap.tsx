@@ -1,6 +1,6 @@
 import Document from '@tiptap/extension-document';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Content, EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -22,6 +22,11 @@ const Tiptap = () => {
   );
 
   const editNote = useEditNote();
+  const findNode = (nodeArray: JSONContent[], nodeType: string) =>
+    nodeArray.find((element) => element.type === nodeType)?.content?.at(0)
+      ?.text;
+
+  console.log(note?.noteContent);
 
   const editor = useEditor(
     {
@@ -40,8 +45,8 @@ const Tiptap = () => {
           },
         }),
       ],
-      content: ``,
-      autofocus: true,
+      content: note?.noteContent as JSONContent,
+      autofocus: 'end',
       injectCSS: false,
       editorProps: {
         attributes: {
@@ -51,28 +56,33 @@ const Tiptap = () => {
       },
       // onUpdate({ editor }) {},
       onBlur({ editor }) {
-        const json = editor.getJSON();
-        const body = json.content;
-        if (body && selectedNote) {
-          const title = body
-            .find((element) => element.type === 'heading')
-            ?.content?.at(0)?.text;
-          const subheader = body
-            .find((element) => element.type === 'paragraph')
-            ?.content?.at(0)?.text;
-
-          editNote({ title, subheader, body, id: selectedNote });
+        const noteContent: JSONContent = editor.getJSON();
+        if (noteContent.content && selectedNote) {
+          const title = findNode(noteContent.content, 'heading');
+          const subheader = findNode(noteContent.content, 'paragraph');
+          editNote({ title, subheader, noteContent, id: selectedNote });
         }
+
+        // if (body && selectedNote) {
+        //   const title = body
+        //     .find((element) => element.type === 'heading')
+        //     ?.content?.at(0)?.text;
+        //   const subheader = body
+        //     .find((element) => element.type === 'paragraph')
+        //     ?.content?.at(0)?.text;
+
+        //   editNote({ title, subheader, body, id: selectedNote });
+        // }
       },
     },
     [selectedNote]
   );
 
   useEffect(() => {
-    if (editor && !editor.isDestroyed) {
-      editor?.commands.setContent(note?.body as Content);
-    }
-  }, [note, editor]);
+    // if (editor && !editor.isDestroyed) {
+    //   editor?.commands.setContent(note?.body as Content);
+    // }
+  });
 
   return (
     <>
