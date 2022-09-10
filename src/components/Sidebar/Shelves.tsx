@@ -20,7 +20,9 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
 
   // tRPC getting all categories
-  const { data: categories } = trpc.useQuery(['category.getAll']);
+  const { data: categories } = trpc.useQuery(['category.getAll'], {
+    staleTime: Infinity,
+  });
 
   const addCategory = useAddCategory();
 

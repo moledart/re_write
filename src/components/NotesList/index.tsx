@@ -9,14 +9,19 @@ import AddNoteButton from '../AddNoteButton';
 
 const NotesList = () => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const ctx = trpc.useContext();
 
-  const {
-    data: notes,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-  } = trpc.useQuery(['notes.getNotes', { id: selectedCategory }]);
+  const { data: notes } = trpc.useQuery(
+    ['notes.getNotes', { id: selectedCategory }],
+    {
+      onSettled: (recievedNotes) => {
+        recievedNotes?.forEach((note) =>
+          ctx.setQueryData(['notes.getNoteById', { id: note.id }], note)
+        );
+      },
+      staleTime: Infinity,
+    }
+  );
 
   return (
     <div className="px-5 py-10 border-r border-r-zinc-200 max-h-screen overflow-hidden flex flex-col">

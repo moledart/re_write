@@ -15,12 +15,10 @@ const CustomDocument = Document.extend({
 
 const Tiptap = () => {
   const [selectedNote] = useAtom(selectedNoteAtom);
-  console.log(selectedNote);
-  const ctx = trpc.useContext();
-  const { data: notes } = trpc.useQuery(['notes.getNotes']);
+
   const { data: note } = trpc.useQuery(
     ['notes.getNoteById', { id: selectedNote! }],
-    { enabled: !!selectedNote }
+    { enabled: !!selectedNote, staleTime: Infinity }
   );
 
   const editNote = useEditNote();
