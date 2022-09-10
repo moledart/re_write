@@ -14,8 +14,7 @@ export const useDeleteNote = () => {
         ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
     },
     onSettled: () => {
-      const notes = ctx.getQueryData(['notes.getNotes']);
-      setSelectedNote(notes?.at(0)?.id);
+      setSelectedNote(undefined);
       ctx.invalidateQueries(['notes.getNotes']);
     },
   });

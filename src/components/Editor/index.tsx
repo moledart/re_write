@@ -1,7 +1,7 @@
 import { JSONContent } from '@tiptap/react';
 import { useAtom } from 'jotai';
 import { useDeleteNote } from '../../hooks/useDeleteNote';
-import { activeEditorAtom, selectedNoteAtom } from '../../state/atoms';
+import { selectedNoteAtom } from '../../state/atoms';
 import AddNoteButton from '../AddNoteButton';
 import Tiptap from './Tiptap';
 
@@ -13,10 +13,9 @@ export interface NoteFields {
 
 const NoteEditor = () => {
   const [selectedNote, setSelectedNote] = useAtom(selectedNoteAtom);
-  const [activeEditor] = useAtom(activeEditorAtom);
   const deleteNote = useDeleteNote();
 
-  if (!selectedNote && !activeEditor)
+  if (!selectedNote)
     return (
       <div className="w-fit h-fit self-center justify-self-center">
         <AddNoteButton />

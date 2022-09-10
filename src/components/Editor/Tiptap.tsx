@@ -3,7 +3,6 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
 import { useEditNote } from '../../hooks/useEditNote';
 import { selectedNoteAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
@@ -16,17 +15,17 @@ const CustomDocument = Document.extend({
 const Tiptap = () => {
   const [selectedNote] = useAtom(selectedNoteAtom);
 
+  // console.log('from tiptap', selectedNote);
   const { data: note } = trpc.useQuery(
     ['notes.getNoteById', { id: selectedNote! }],
     { enabled: !!selectedNote, staleTime: Infinity }
   );
 
   const editNote = useEditNote();
+
   const findNode = (nodeArray: JSONContent[], nodeType: string) =>
     nodeArray.find((element) => element.type === nodeType)?.content?.at(0)
       ?.text;
-
-  console.log(note?.noteContent);
 
   const editor = useEditor(
     {
@@ -54,7 +53,6 @@ const Tiptap = () => {
             'prose h-full min-h-[300px] max-w-none focus:outline-none py-10',
         },
       },
-      // onUpdate({ editor }) {},
       onBlur({ editor }) {
         const noteContent: JSONContent = editor.getJSON();
         if (noteContent.content && selectedNote) {
@@ -62,27 +60,10 @@ const Tiptap = () => {
           const subheader = findNode(noteContent.content, 'paragraph');
           editNote({ title, subheader, noteContent, id: selectedNote });
         }
-
-        // if (body && selectedNote) {
-        //   const title = body
-        //     .find((element) => element.type === 'heading')
-        //     ?.content?.at(0)?.text;
-        //   const subheader = body
-        //     .find((element) => element.type === 'paragraph')
-        //     ?.content?.at(0)?.text;
-
-        //   editNote({ title, subheader, body, id: selectedNote });
-        // }
       },
     },
     [selectedNote]
   );
-
-  useEffect(() => {
-    // if (editor && !editor.isDestroyed) {
-    //   editor?.commands.setContent(note?.body as Content);
-    // }
-  });
 
   return (
     <>
