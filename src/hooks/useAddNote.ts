@@ -14,8 +14,8 @@ export const useAddNote = () => {
         ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
     },
     onSettled: (data) => {
-      ctx.invalidateQueries(['notes.getNotes']);
       setSelectedNote(data?.id);
+      ctx.invalidateQueries(['notes.getNotes']);
     },
   });
 

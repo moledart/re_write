@@ -16,13 +16,13 @@ export const notesRouter = createRouter()
         orderBy: {
           createdAt: 'desc',
         },
-        select: {
-          createdAt: true,
-          title: true,
-          subheader: true,
-          tags: true,
-          id: true,
-        },
+        // select: {
+        //   createdAt: true,
+        //   title: true,
+        //   subheader: true,
+        //   tags: true,
+        //   id: true,
+        // },
       });
     },
   })

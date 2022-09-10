@@ -4,7 +4,6 @@ import { Content, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
 import { useEditNote } from '../../hooks/useEditNote';
 import { selectedNoteAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
@@ -16,8 +15,9 @@ const CustomDocument = Document.extend({
 
 const Tiptap = () => {
   const [selectedNote] = useAtom(selectedNoteAtom);
-  const qc = useQueryClient();
-
+  console.log(selectedNote);
+  const ctx = trpc.useContext();
+  const { data: notes } = trpc.useQuery(['notes.getNotes']);
   const { data: note } = trpc.useQuery(
     ['notes.getNoteById', { id: selectedNote! }],
     { enabled: !!selectedNote }
@@ -42,7 +42,7 @@ const Tiptap = () => {
           },
         }),
       ],
-      content: `${note?.body as Content}`,
+      content: ``,
       autofocus: true,
       injectCSS: false,
       editorProps: {
@@ -51,20 +51,7 @@ const Tiptap = () => {
             'prose h-full min-h-[300px] max-w-none focus:outline-none py-10',
         },
       },
-      onUpdate({ editor }) {
-        // qc.setQueryData()
-        // const json = editor.getJSON();
-        // const body = json.content;
-        // if (body && selectedNote) {
-        //   const title = body
-        //     .find((element) => element.type === 'heading')
-        //     ?.content?.at(0)?.text;
-        //   const subheader = body
-        //     .find((element) => element.type === 'paragraph')
-        //     ?.content?.at(0)?.text;
-        //   editNote({ title, subheader, body, id: selectedNote });
-        // }
-      },
+      // onUpdate({ editor }) {},
       onBlur({ editor }) {
         const json = editor.getJSON();
         const body = json.content;
