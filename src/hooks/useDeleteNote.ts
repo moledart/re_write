@@ -1,21 +1,40 @@
 import { useAtom } from 'jotai';
-import { selectedNoteAtom } from '../state/atoms';
+import {
+  searchAtom,
+  selectedCategoryAtom,
+  selectedNoteAtom,
+} from '../state/atoms';
 import { trpc } from '../utils/trpc';
 
 export const useDeleteNote = () => {
   const ctx = trpc.useContext();
   const [, setSelectedNote] = useAtom(selectedNoteAtom);
+  const [searchInput] = useAtom(searchAtom);
+  const [selectedCategory] = useAtom(selectedCategoryAtom);
 
   const { mutate: deleteNote } = trpc.useMutation(['notes.deleteNote'], {
-    onMutate: () => {
-      ctx.cancelQuery(['notes.getNotes']);
-      const optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
-      if (optimisticUpdate)
-        ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
+    onMutate: ({ id }) => {
+      // ctx.cancelQuery(['notes.getNotes']);
+      const notes = ctx.getQueryData([
+        'notes.getNotes',
+        { categoryId: selectedCategory, search: searchInput },
+      ]);
+      const newNotes = notes?.filter((note) => note.id !== id);
+      if (newNotes) {
+        ctx.setQueryData(
+          [
+            'notes.getNotes',
+            { categoryId: selectedCategory, search: searchInput },
+          ],
+          newNotes
+        );
+      }
     },
     onSettled: () => {
-      setSelectedNote(undefined);
-      ctx.invalidateQueries(['notes.getNotes']);
+      ctx.invalidateQueries([
+        'notes.getNotes',
+        { categoryId: selectedCategory, search: searchInput },
+      ]);
     },
   });
 

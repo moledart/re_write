@@ -6,13 +6,6 @@ export const useDeleteCategory = () => {
   const { mutate: removeCategory } = trpc.useMutation(
     ['category.removeCategory'],
     {
-      onMutate: () => {
-        ctx.cancelQuery(['category.getAll']);
-        const optimisticUpdate = ctx.getQueryData(['category.getAll']);
-        if (optimisticUpdate) {
-          ctx.setQueryData(['category.getAll'], optimisticUpdate);
-        }
-      },
       onSettled: () => {
         ctx.invalidateQueries(['category.getAll']);
       },

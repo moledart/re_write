@@ -50,7 +50,11 @@ const NoteCard = ({ note }: Props) => {
           <RiDeleteBinLine
             size="24px"
             className="text-zinc-300 hover:text-rose-400 place-self-center opacity-0 ml-auto group-hover:opacity-100 transition-all duration-100"
-            onClick={() => deleteNote({ id })}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedNote(undefined);
+              deleteNote({ id });
+            }}
           />
         </div>
       </article>

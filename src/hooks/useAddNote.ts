@@ -7,12 +7,6 @@ export const useAddNote = () => {
   const [, setSelectedNote] = useAtom(selectedNoteAtom);
 
   const { mutate: addNote } = trpc.useMutation(['notes.addNewNote'], {
-    onMutate: () => {
-      ctx.cancelQuery(['notes.getNotes']);
-      const optimisticUpdate = ctx.getQueryData(['notes.getNotes']);
-      if (optimisticUpdate)
-        ctx.setQueryData(['notes.getNotes'], optimisticUpdate);
-    },
     onSettled: (data) => {
       setSelectedNote(data?.id);
       ctx.invalidateQueries(['notes.getNotes']);

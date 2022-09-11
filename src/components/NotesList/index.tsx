@@ -14,7 +14,7 @@ const NotesList = () => {
   const ctx = trpc.useContext();
 
   const { data: notes } = trpc.useQuery(
-    ['notes.getNotes', { id: selectedCategory, search: search }],
+    ['notes.getNotes', { categoryId: selectedCategory, search: search }],
     {
       onSettled: (recievedNotes) => {
         recievedNotes?.forEach((note) =>

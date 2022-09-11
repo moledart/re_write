@@ -5,14 +5,14 @@ export const notesRouter = createRouter()
   .query('getNotes', {
     input: z
       .object({
-        id: z.string().optional(),
+        categoryId: z.string().optional(),
         search: z.string().optional(),
       })
       .optional(),
     async resolve({ ctx, input }) {
       return await ctx.prisma.note.findMany({
         where: {
-          categoryId: input ? input.id : undefined,
+          categoryId: input ? input.categoryId : undefined,
           OR: [
             {
               title: {
@@ -52,18 +52,12 @@ export const notesRouter = createRouter()
     },
   })
   .mutation('addNewNote', {
-    input: z.object({
-      title: z.string().optional(),
-      subheader: z.any().optional(),
-      noteContent: z.any().optional(),
-    }),
-    async resolve({ ctx, input }) {
+    async resolve({ ctx }) {
       try {
         return await ctx.prisma.note.create({
           data: {
-            title: input.title,
-            subheader: input.subheader,
-            noteContent: input.noteContent,
+            title: 'New note',
+            subheader: 'You can start writing',
           },
         });
       } catch (error) {
