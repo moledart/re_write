@@ -13,7 +13,11 @@ const NotesList = () => {
 
   const ctx = trpc.useContext();
 
-  const { data: notes } = trpc.useQuery(
+  const {
+    data: notes,
+    isLoading,
+    isSuccess,
+  } = trpc.useQuery(
     ['notes.getNotes', { categoryId: selectedCategory, search: search }],
     {
       onSettled: (recievedNotes) => {
@@ -39,7 +43,7 @@ const NotesList = () => {
         {notes?.map((note) => (
           <NoteCard note={note} key={note.id} />
         ))}
-        {!notes?.length && search && (
+        {isSuccess && !notes?.length && search && (
           <span className="text-zinc-600 mt-5">Nothing to display</span>
         )}
       </ul>
