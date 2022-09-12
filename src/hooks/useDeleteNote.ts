@@ -14,7 +14,7 @@ export const useDeleteNote = () => {
 
   const { mutate: deleteNote } = trpc.useMutation(['notes.deleteNote'], {
     onMutate: ({ id }) => {
-      // ctx.cancelQuery(['notes.getNotes']);
+      ctx.cancelQuery(['notes.getNotes']);
       const notes = ctx.getQueryData([
         'notes.getNotes',
         { categoryId: selectedCategory, search: searchInput },
@@ -30,11 +30,9 @@ export const useDeleteNote = () => {
         );
       }
     },
-    onSettled: () => {
-      ctx.invalidateQueries([
-        'notes.getNotes',
-        { categoryId: selectedCategory, search: searchInput },
-      ]);
+    onSuccess: () => {
+      ctx.invalidateQueries(['notes.getNotes']);
+      setSelectedNote(undefined);
     },
   });
 

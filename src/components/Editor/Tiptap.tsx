@@ -4,7 +4,11 @@ import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
 import { useEditNote } from '../../hooks/useEditNote';
-import { selectedNoteAtom } from '../../state/atoms';
+import {
+  searchAtom,
+  selectedCategoryAtom,
+  selectedNoteAtom,
+} from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 import EditorMenu from './EditorMenu';
 
@@ -14,8 +18,10 @@ const CustomDocument = Document.extend({
 
 const Tiptap = () => {
   const [selectedNote] = useAtom(selectedNoteAtom);
+  const [searchInput] = useAtom(searchAtom);
+  const [selectedCategory] = useAtom(selectedCategoryAtom);
+  const ctx = trpc.useContext();
 
-  // console.log('from tiptap', selectedNote);
   const { data: note } = trpc.useQuery(
     ['notes.getNoteById', { id: selectedNote! }],
     { enabled: !!selectedNote, staleTime: Infinity }
@@ -61,8 +67,30 @@ const Tiptap = () => {
           editNote({ title, subheader, noteContent, id: selectedNote });
         }
       },
+      onUpdate({ editor }) {
+        const noteContent: JSONContent = editor.getJSON();
+        if (noteContent.content && selectedNote) {
+          const title = findNode(noteContent.content, 'heading') || null;
+          const subheader = findNode(noteContent.content, 'paragraph') || null;
+          // editNote({ title, subheader, noteContent, id: selectedNote });
+          const notes = ctx.getQueryData([
+            'notes.getNotes',
+            { categoryId: selectedCategory, search: searchInput },
+          ]);
+          const newNotes = notes?.map((note) => {
+            if (note.id === selectedNote) return { ...note, title, subheader };
+            return note;
+          });
+          if (newNotes) {
+            ctx.setQueryData(
+              ['notes.getNotes', { search: searchInput || '' }],
+              newNotes
+            );
+          }
+        }
+      },
     },
-    [selectedNote]
+    [selectedNote, selectedCategory]
   );
 
   return (

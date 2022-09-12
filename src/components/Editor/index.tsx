@@ -30,8 +30,8 @@ const NoteEditor = () => {
         <button
           className="text-zinc-600 px-6 py-4 mt-5"
           onClick={() => {
-            deleteNote({ id: selectedNote! });
             setSelectedNote(undefined);
+            deleteNote({ id: selectedNote! });
           }}
         >
           Delete note

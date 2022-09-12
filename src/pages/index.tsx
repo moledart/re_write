@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import NoteEditor from '../components/Editor';
 //State
 
 //Components
-import NoteEditor from '../components/Editor';
 import NotesList from '../components/NotesList';
 import Sidebar from '../components/Sidebar/';
 
