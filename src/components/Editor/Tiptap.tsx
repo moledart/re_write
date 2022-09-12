@@ -27,6 +27,7 @@ const Tiptap = () => {
     { enabled: !!selectedNote, staleTime: Infinity }
   );
 
+  console.log(note?.noteContent);
   const editNote = useEditNote();
 
   const findNode = (nodeArray: JSONContent[], nodeType: string) =>
@@ -83,15 +84,21 @@ const Tiptap = () => {
           });
           if (newNotes) {
             ctx.setQueryData(
-              ['notes.getNotes', { search: searchInput || '' }],
+              ['notes.getNotes', { search: searchInput }],
               newNotes
             );
+            ctx.setQueryData(['notes.getNotes', { search: '' }], newNotes);
           }
         }
       },
     },
     [selectedNote, selectedCategory]
   );
+
+  // useEffect(() => {
+  //   if (editor && !editor.isDestroyed)
+  //     editor?.commands.setContent(note?.noteContent as Content);
+  // }, [note]);
 
   return (
     <>

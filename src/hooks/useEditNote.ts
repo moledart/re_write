@@ -9,7 +9,7 @@ export const useEditNote = () => {
 
   const { mutate: editNote } = trpc.useMutation(['notes.editNote'], {
     onSettled: () => {
-      ctx.invalidateQueries(['notes.getNotes']);
+      ctx.invalidateQueries(['notes.getNotes', { search: '' }]);
     },
   });
 
