@@ -11,6 +11,18 @@ export const categoryRouter = createRouter()
       });
     },
   })
+  .query('getCategoryById', {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      return await ctx.prisma.category.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    },
+  })
   .mutation('addCategory', {
     input: z.object({
       name: z.string().min(1),

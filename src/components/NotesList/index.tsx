@@ -13,11 +13,7 @@ const NotesList = () => {
 
   const ctx = trpc.useContext();
 
-  const {
-    data: notes,
-    isLoading,
-    isSuccess,
-  } = trpc.useQuery(
+  const { data: notes, isSuccess } = trpc.useQuery(
     ['notes.getNotes', { categoryId: selectedCategory, search: search }],
     {
       onSettled: (recievedNotes) => {
@@ -29,11 +25,18 @@ const NotesList = () => {
     }
   );
 
+  const { data: currentCategory } = trpc.useQuery(
+    ['category.getCategoryById', { id: selectedCategory! }],
+    {
+      enabled: !!selectedCategory,
+    }
+  );
+
   return (
     <div className="px-5 py-10 border-r border-r-zinc-200 max-h-screen overflow-hidden flex flex-col">
       <header>
         <h1 className="text-3xl font-bold flex items-center h-[72px]">
-          All the notes
+          {currentCategory?.name || 'All the notes'}
         </h1>
         <div className="max-w-fit">
           <AddNoteButton />

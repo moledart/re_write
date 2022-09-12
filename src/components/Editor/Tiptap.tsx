@@ -3,6 +3,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { useDebounce } from 'use-debounce';
 import { useEditNote } from '../../hooks/useEditNote';
 import {
   searchAtom,
@@ -61,12 +63,12 @@ const Tiptap = () => {
         },
       },
       onBlur({ editor }) {
-        const noteContent: JSONContent = editor.getJSON();
-        if (noteContent.content && selectedNote) {
-          const title = findNode(noteContent.content, 'heading');
-          const subheader = findNode(noteContent.content, 'paragraph');
-          editNote({ title, subheader, noteContent, id: selectedNote });
-        }
+        // const noteContent: JSONContent = editor.getJSON();
+        // if (noteContent.content && selectedNote) {
+        //   const title = findNode(noteContent.content, 'heading');
+        //   const subheader = findNode(noteContent.content, 'paragraph');
+        //   editNote({ title, subheader, noteContent, id: selectedNote });
+        // }
       },
       onUpdate({ editor }) {
         const noteContent: JSONContent = editor.getJSON();
@@ -79,12 +81,20 @@ const Tiptap = () => {
             { categoryId: selectedCategory, search: searchInput },
           ]);
           const newNotes = notes?.map((note) => {
-            if (note.id === selectedNote) return { ...note, title, subheader };
+            if (note.id === selectedNote)
+              return {
+                ...note,
+                title,
+                subheader,
+              };
             return note;
           });
           if (newNotes) {
             ctx.setQueryData(
-              ['notes.getNotes', { search: searchInput }],
+              [
+                'notes.getNotes',
+                { categoryId: selectedCategory, search: searchInput },
+              ],
               newNotes
             );
             ctx.setQueryData(['notes.getNotes', { search: '' }], newNotes);
@@ -94,6 +104,19 @@ const Tiptap = () => {
     },
     [selectedNote, selectedCategory]
   );
+
+  const [debouncedEditor] = useDebounce(editor?.state.doc.content, 1000);
+
+  useEffect(() => {
+    if (debouncedEditor && editor) {
+      const noteContent: JSONContent = editor.getJSON();
+      if (noteContent.content && selectedNote) {
+        const title = findNode(noteContent.content, 'heading');
+        const subheader = findNode(noteContent.content, 'paragraph');
+        editNote({ title, subheader, noteContent, id: selectedNote });
+      }
+    }
+  }, [debouncedEditor]);
 
   // useEffect(() => {
   //   if (editor && !editor.isDestroyed)

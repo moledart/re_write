@@ -52,12 +52,16 @@ export const notesRouter = createRouter()
     },
   })
   .mutation('addNewNote', {
-    async resolve({ ctx }) {
+    input: z.object({
+      categoryId: z.string().optional(),
+    }),
+    async resolve({ ctx, input }) {
       try {
         return await ctx.prisma.note.create({
           data: {
             title: 'New note',
             subheader: 'You can start writing',
+            categoryId: input.categoryId || undefined,
           },
         });
       } catch (error) {
@@ -90,7 +94,7 @@ export const notesRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.note.update({
+        return await ctx.prisma.note.update({
           where: {
             id: input.id,
           },

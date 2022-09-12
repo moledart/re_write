@@ -38,10 +38,10 @@ const NoteCard = ({ note }: Props) => {
           {date}
         </small>
         <h3 className="text-xl line-clamp-1">
-          {title ? title : 'Start writing'}
+          {title && title.length ? title : ''}
         </h3>
         <p className={`line-clamp-1 mt-2 ${isActive ? 'text-zinc-500' : ''}`}>
-          {subheader ? subheader : 'Conent is here'}
+          {subheader && subheader.length ? subheader : ''}
         </p>
         <div className="flex flex-wrap gap-2 mt-4">
           {/* <Tag selectedNoteTag={selectedNote === note.id} />
