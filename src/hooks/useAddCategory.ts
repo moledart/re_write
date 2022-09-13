@@ -8,6 +8,13 @@ export const useAddCategory = () => {
   const [, setSelectedNote] = useAtom(selectedNoteAtom);
 
   const { mutate: addCategory } = trpc.useMutation('category.addCategory', {
+    onMutate: ({ id, name }) => {
+      ctx.cancelQuery(['category.getAll']);
+      ctx.setQueryData(['category.getAll'], (old) => {
+        if (old) return [...old, { id, name, createdAt: new Date() }];
+        return old!;
+      });
+    },
     onSettled: (data) => {
       setSelectedCategory(data?.id);
       setSelectedNote(undefined);

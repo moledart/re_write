@@ -6,6 +6,7 @@ import { selectedCategoryAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 
 //Components
+import cuid from 'cuid';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import { useAddCategory } from '../../hooks/useAddCategory';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
@@ -72,7 +73,7 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
               size={24}
               className="hover:text-emerald-600"
               onClick={() => {
-                addCategory({ name: categoryName });
+                addCategory({ name: categoryName, id: cuid() });
                 setCategoryName('');
                 setToggleNewCategory(false);
               }}

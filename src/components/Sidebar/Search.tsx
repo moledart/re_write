@@ -9,7 +9,6 @@ const NotesSearch = () => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setSearch(inputValue);
-      // Send Axios request here
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);

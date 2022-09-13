@@ -6,7 +6,7 @@ export const categoryRouter = createRouter()
     async resolve({ ctx }) {
       return await ctx.prisma.category.findMany({
         orderBy: {
-          name: 'desc',
+          createdAt: 'asc',
         },
       });
     },
@@ -26,11 +26,13 @@ export const categoryRouter = createRouter()
   .mutation('addCategory', {
     input: z.object({
       name: z.string().min(1),
+      id: z.string(),
     }),
     async resolve({ ctx, input }) {
       try {
         return await ctx.prisma.category.create({
           data: {
+            id: input.id,
             name: input.name,
           },
         });
