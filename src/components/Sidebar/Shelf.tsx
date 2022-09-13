@@ -2,13 +2,14 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { RiCheckLine, RiCloseLine, RiMoreFill } from 'react-icons/ri';
 import { useEditCategory } from '../../hooks/useEditCategory';
-import { selectedCategoryAtom } from '../../state/atoms';
+import { selectedCategoryAtom, selectedNoteAtom } from '../../state/atoms';
 import ShelfMenu from './ShelfMenu';
 
 const Shelf = ({ name, id }: { name: string; id: string }) => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
   const [menuVisible, setMenuVisible] = useState(false);
   const [categoryName, setCategoryName] = useState(name);
+  const [, setSelectedNote] = useAtom(selectedNoteAtom);
   const [editName, setEditName] = useState(false);
   const editCategory = useEditCategory();
 
@@ -19,7 +20,10 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
       className={`flex justify-between relative hover-border ${
         isActive ? 'bg-white text-zinc-900' : 'text-zinc-400'
       }`}
-      onClick={() => setSelectedCategory(id)}
+      onClick={() => {
+        setSelectedCategory(id);
+        setSelectedNote(undefined);
+      }}
     >
       {editName ? (
         <>

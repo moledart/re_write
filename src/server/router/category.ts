@@ -29,7 +29,7 @@ export const categoryRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.category.create({
+        return await ctx.prisma.category.create({
           data: {
             name: input.name,
           },
@@ -45,7 +45,7 @@ export const categoryRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.category.delete({
+        return await ctx.prisma.category.delete({
           where: {
             id: input.id,
           },
@@ -62,7 +62,7 @@ export const categoryRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        await ctx.prisma.category.update({
+        return await ctx.prisma.category.update({
           where: {
             id: input.id,
           },

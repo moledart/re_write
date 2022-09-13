@@ -71,7 +71,6 @@ const Tiptap = () => {
         const noteContent: JSONContent = editor.getJSON();
         const title = findNode(noteContent.content!, 'heading');
         const subheader = findNode(noteContent.content!);
-        console.log(noteContent);
         const notes = ctx.getQueryData([
           'notes.getNotes',
           { categoryId: selectedCategory, search: searchInput },
@@ -115,11 +114,6 @@ const Tiptap = () => {
       });
     }
   }, [debouncedEditor]);
-
-  // useEffect(() => {
-  //   if (editor && !editor.isDestroyed)
-  //     editor?.commands.setContent(note?.noteContent as Content);
-  // }, [note]);
 
   return (
     <>
