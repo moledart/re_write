@@ -29,12 +29,17 @@ const Tiptap = () => {
     { enabled: !!selectedNote, staleTime: Infinity }
   );
 
-  console.log(note?.noteContent);
   const editNote = useEditNote();
 
-  const findNode = (nodeArray: JSONContent[], nodeType: string) =>
-    nodeArray.find((element) => element.type === nodeType)?.content?.at(0)
-      ?.text;
+  const findNode = (nodeArray: JSONContent[], nodeType?: string) => {
+    if (nodeType) {
+      return nodeArray
+        .find((element) => element.type === nodeType)
+        ?.content?.at(0)?.text;
+    } else {
+      return nodeArray.at(1)?.content?.at(0)?.text;
+    }
+  };
 
   const editor = useEditor(
     {
@@ -59,46 +64,36 @@ const Tiptap = () => {
       editorProps: {
         attributes: {
           class:
-            'prose h-full min-h-[300px] max-w-none focus:outline-none py-10',
+            'prose h-full min-h-[300px] max-w-none focus:outline-none py-10 whitespace-pre-wrap',
         },
-      },
-      onBlur({ editor }) {
-        // const noteContent: JSONContent = editor.getJSON();
-        // if (noteContent.content && selectedNote) {
-        //   const title = findNode(noteContent.content, 'heading');
-        //   const subheader = findNode(noteContent.content, 'paragraph');
-        //   editNote({ title, subheader, noteContent, id: selectedNote });
-        // }
       },
       onUpdate({ editor }) {
         const noteContent: JSONContent = editor.getJSON();
-        if (noteContent.content && selectedNote) {
-          const title = findNode(noteContent.content, 'heading') || null;
-          const subheader = findNode(noteContent.content, 'paragraph') || null;
-          // editNote({ title, subheader, noteContent, id: selectedNote });
-          const notes = ctx.getQueryData([
-            'notes.getNotes',
-            { categoryId: selectedCategory, search: searchInput },
-          ]);
-          const newNotes = notes?.map((note) => {
-            if (note.id === selectedNote)
-              return {
-                ...note,
-                title,
-                subheader,
-              };
-            return note;
-          });
-          if (newNotes) {
-            ctx.setQueryData(
-              [
-                'notes.getNotes',
-                { categoryId: selectedCategory, search: searchInput },
-              ],
-              newNotes
-            );
-            ctx.setQueryData(['notes.getNotes', { search: '' }], newNotes);
-          }
+        const title = findNode(noteContent.content!, 'heading');
+        const subheader = findNode(noteContent.content!);
+        console.log(noteContent);
+        const notes = ctx.getQueryData([
+          'notes.getNotes',
+          { categoryId: selectedCategory, search: searchInput },
+        ]);
+        const newNotes = notes?.map((note) => {
+          if (note.id === selectedNote)
+            return {
+              ...note,
+              title: title || '',
+              subheader: subheader || '',
+            };
+          return note;
+        });
+        if (newNotes) {
+          ctx.setQueryData(
+            [
+              'notes.getNotes',
+              { categoryId: selectedCategory, search: searchInput },
+            ],
+            newNotes
+          );
+          ctx.setQueryData(['notes.getNotes', { search: '' }], newNotes);
         }
       },
     },
@@ -109,12 +104,15 @@ const Tiptap = () => {
 
   useEffect(() => {
     if (debouncedEditor && editor) {
-      const noteContent: JSONContent = editor.getJSON();
-      if (noteContent.content && selectedNote) {
-        const title = findNode(noteContent.content, 'heading');
-        const subheader = findNode(noteContent.content, 'paragraph');
-        editNote({ title, subheader, noteContent, id: selectedNote });
-      }
+      const noteContent = editor.getJSON();
+      const title = findNode(noteContent.content!, 'heading');
+      const subheader = findNode(noteContent.content!);
+      editNote({
+        title: title || '',
+        subheader: subheader || '',
+        noteContent,
+        id: selectedNote!,
+      });
     }
   }, [debouncedEditor]);
 

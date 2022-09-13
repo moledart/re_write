@@ -13,6 +13,7 @@ export const notesRouter = createRouter()
       return await ctx.prisma.note.findMany({
         where: {
           categoryId: input ? input.categoryId : undefined,
+
           OR: [
             {
               title: {
@@ -59,9 +60,9 @@ export const notesRouter = createRouter()
       try {
         return await ctx.prisma.note.create({
           data: {
-            title: 'New note',
-            subheader: 'You can start writing',
-            categoryId: input.categoryId || undefined,
+            title: '',
+            subheader: '',
+            categoryId: input.categoryId,
           },
         });
       } catch (error) {
