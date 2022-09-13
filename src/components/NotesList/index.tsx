@@ -25,10 +25,22 @@ const NotesList = () => {
     }
   );
 
+  const { data: categories } = trpc.useQuery(['category.getAll']);
+
+  // if (notes && categories) {
+  //   categories.forEach((item) =>
+  //     ctx.setQueryData(
+  //       ['notes.getNotes', { categoryId: item.id, search: '' }],
+  //       notes.filter((note) => note.categoryId === item.id)
+  //     )
+  //   );
+  // }
+
   const { data: currentCategory } = trpc.useQuery(
     ['category.getCategoryById', { id: selectedCategory! }],
     {
       enabled: !!selectedCategory,
+      staleTime: Infinity,
     }
   );
 

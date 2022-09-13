@@ -6,8 +6,9 @@ import { selectedCategoryAtom } from '../../state/atoms';
 import { trpc } from '../../utils/trpc';
 
 //Components
-import { RiBillLine } from 'react-icons/ri';
+import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import { useAddCategory } from '../../hooks/useAddCategory';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 import Shelf from './Shelf';
 
 interface Props {
@@ -20,8 +21,7 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
 
   const ctx = trpc.useContext();
-
-  // tRPC getting all categories
+  const addCategory = useAddCategory();
   const { data: categories } = trpc.useQuery(['category.getAll'], {
     onSettled: (recivedCategoriries) => {
       recivedCategoriries?.forEach((category) =>
@@ -34,12 +34,20 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
     staleTime: Infinity,
   });
 
-  const addCategory = useAddCategory();
+  // Detecting outside click
+  const handleClickOutside = () => {
+    setToggleNewCategory(false);
+  };
+  const ref = useOutsideClick(handleClickOutside, toggleNewCategory);
+
+  const isActive = selectedCategory === undefined;
 
   return (
     <ul className="flex flex-col gap-2 mt-10">
       <li
-        className={`flex justify-between relative hover-border`}
+        className={`flex justify-between relative hover-border ${
+          isActive ? 'bg-white text-zinc-900' : 'text-zinc-400'
+        }`}
         onClick={() => setSelectedCategory(undefined)}
       >
         <p className="pl-4 py-4">All notes</p>
@@ -48,28 +56,35 @@ const Shelves = ({ toggleNewCategory, setToggleNewCategory }: Props) => {
         <Shelf name={name} id={id} key={id} />
       ))}
       {toggleNewCategory && (
-        <li className="relative">
+        <li
+          className="flex justify-between relative hover-border bg-white text-zinc-900"
+          ref={ref}
+        >
           <input
             type="text"
-            className="w-full px-14 py-4 rounded-lg overflow-hidden focus:outline-none"
+            className="flex pl-4 py-3 outline-none min-w-0 rounded-lg"
             placeholder="Add title"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
-          <RiBillLine
-            size="24px"
-            className="absolute top-1/2 -translate-y-1/2 left-4 text-zinc-400"
-          />
-          <button
-            className="absolute top-1/2 -translate-y-1/2 right-0 z-10 px-4 cursor-pointer h-[calc(100%-2px)] bg-zinc-700 hover:bg-zinc-900 text-zinc-50"
-            onClick={() => {
-              addCategory({ name: categoryName });
-              setCategoryName('');
-              setToggleNewCategory(false);
-            }}
-          >
-            Add
-          </button>
+          <div className="flex items-center gap-2 mr-4 text-zinc-400">
+            <RiCheckLine
+              size={24}
+              className="hover:text-emerald-600"
+              onClick={() => {
+                addCategory({ name: categoryName });
+                setCategoryName('');
+                setToggleNewCategory(false);
+              }}
+            />
+            <RiCloseLine
+              className="hover:text-rose-600"
+              size={24}
+              onClick={() => {
+                setToggleNewCategory(false);
+              }}
+            />
+          </div>
         </li>
       )}
     </ul>

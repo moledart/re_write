@@ -27,14 +27,16 @@ const NotesSearch = () => {
         size="24px"
         className="absolute top-1/2 -translate-y-1/2 left-4 ml-auto text-zinc-400"
       />
-      <RiCloseLine
-        className="hover:text-rose-600 absolute top-1/2 -translate-y-1/2 right-4 text-zinc-400 cursor-pointer transition-all duration-100"
-        size={24}
-        onClick={() => {
-          setSearch('');
-          setInputValue('');
-        }}
-      />
+      {inputValue && (
+        <RiCloseLine
+          className="hover:text-rose-600 absolute top-1/2 -translate-y-1/2 right-4 text-zinc-400 cursor-pointer transition-all duration-100"
+          size={24}
+          onClick={() => {
+            setSearch('');
+            setInputValue('');
+          }}
+        />
+      )}
     </div>
   );
 };

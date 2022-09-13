@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RiCheckLine, RiCloseLine, RiMoreFill } from 'react-icons/ri';
 import { useEditCategory } from '../../hooks/useEditCategory';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { selectedCategoryAtom, selectedNoteAtom } from '../../state/atoms';
 import ShelfMenu from './ShelfMenu';
 
@@ -13,7 +14,18 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
   const [editName, setEditName] = useState(false);
   const editCategory = useEditCategory();
 
+  const handleClickOutside = () => {
+    setEditName(false);
+    setMenuVisible(false);
+  };
+  const elementRef = useOutsideClick(handleClickOutside, editName);
+  const inputRef = useRef<any>();
+
   const isActive = selectedCategory === id;
+
+  useEffect(() => {
+    if (inputRef && editName) inputRef.current.select();
+  }, [inputRef, editName]);
 
   return (
     <li
@@ -24,6 +36,7 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
         setSelectedCategory(id);
         setSelectedNote(undefined);
       }}
+      ref={elementRef}
     >
       {editName ? (
         <>
@@ -31,6 +44,7 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
             type="text"
             className="flex pl-4 py-3 outline-none min-w-0 rounded-lg"
             placeholder="Add title"
+            ref={inputRef}
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
