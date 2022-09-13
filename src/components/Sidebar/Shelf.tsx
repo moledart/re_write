@@ -16,7 +16,6 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
 
   const handleClickOutside = () => {
     setEditName(false);
-    setMenuVisible(false);
   };
   const elementRef = useOutsideClick(handleClickOutside, editName);
   const inputRef = useRef<any>();
@@ -86,6 +85,7 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
           id={id}
           setEditName={setEditName}
           setVisible={setMenuVisible}
+          visible={menuVisible}
         />
       )}
     </li>
