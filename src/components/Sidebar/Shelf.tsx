@@ -4,6 +4,7 @@ import { RiCheckLine, RiCloseLine, RiMoreFill } from 'react-icons/ri';
 import { useEditCategory } from '../../hooks/useEditCategory';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { selectedCategoryAtom, selectedNoteAtom } from '../../state/atoms';
+import { trpc } from '../../utils/trpc';
 import ShelfMenu from './ShelfMenu';
 
 const Shelf = ({ name, id }: { name: string; id: string }) => {
@@ -13,6 +14,7 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
   const [, setSelectedNote] = useAtom(selectedNoteAtom);
   const [editName, setEditName] = useState(false);
   const editCategory = useEditCategory();
+  const ctx = trpc.useContext();
 
   const handleClickOutside = () => {
     setEditName(false);
@@ -36,6 +38,9 @@ const Shelf = ({ name, id }: { name: string; id: string }) => {
         setSelectedNote(undefined);
       }}
       ref={elementRef}
+      onMouseEnter={() => {
+        ctx.prefetchQuery(['notes.getNotes', { categoryId: id, search: '' }]);
+      }}
     >
       {editName ? (
         <>
